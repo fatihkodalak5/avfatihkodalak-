@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Av. Fatih Kodalak</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2340;
+    --gold: #c9a84c;
+    --cream: #f8f5ef;
+    --white: #ffffff;
+    --text: #1a1a1a;
+    --muted: #5a5a5a;
+    --border: #e0dbd0;
+    --red: #c0392b;
+    --green: #27ae60;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy);
+  }
+
+  .login-box {
+    background: white;
+    padding: 48px;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 360px;
+    border-top: 3px solid var(--gold);
+  }
+
+  .login-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .login-logo span { color: var(--gold); }
+
+  .login-sub {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .login-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .login-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .login-input:focus { border-color: var(--gold); }
+
+  .login-btn {
+    width: 100%;
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .login-btn:hover { background: #243058; }
+
+  .login-error {
+    color: var(--red);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ADMIN PANEL */
+  #admin-panel { display: none; }
+
+  header {
+    background: var(--navy);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .header-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: white;
+    font-weight: 500;
+  }
+
+  .header-logo span { color: var(--gold); }
+
+  .header-right { display: flex; align-items: center; gap: 20px; }
+
+  .btn-site {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .btn-site:hover { color: var(--gold); }
+
+  .btn-logout {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    padding: 6px 16px;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover { border-color: var(--gold); color: var(--gold); }
+
+  .admin-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* FORM */
+  .form-card {
+    background: white;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .form-card-header {
+    background: var(--navy);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .form-card-title {
+    color: white;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .form-card-subtitle {
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+  }
+
+  .form-body { padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+
+  .field label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .field input, .field select, .field textarea {
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s;
+    color: var(--text);
+    background: white;
+  }
+
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--gold);
+  }
+
+  .field textarea { resize: vertical; min-height: 160px; line-height: 1.7; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .btn-submit {
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    padding: 13px 28px;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    align-self: flex-start;
+  }
+
+  .btn-submit:hover { background: #e2c47a; }
+
+  .btn-cancel {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 13px 24px;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel:hover { border-color: var(--muted); }
+
+  .form-actions { display: flex; gap: 12px; align-items: center; }
+
+  .form-success {
+    background: #eafaf1;
+    border: 1px solid #a9dfbf;
+    color: var(--green);
+    padding: 12px 16px;
+    border-radius: 2px;
+    font-size: 14px;
+    display: none;
+  }
+
+  /* POSTS LIST */
+  .list-card {
+    background: white;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: sticky;
+    top: 24px;
+  }
+
+  .list-header {
+    background: var(--navy);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .list-title {
+    color: white;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .post-count {
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .posts-list { max-height: 600px; overflow-y: auto; }
+
+  .post-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    transition: background 0.15s;
+  }
+
+  .post-item:hover { background: #fafaf8; }
+  .post-item:last-child { border-bottom: none; }
+
+  .post-item-info { flex: 1; min-width: 0; }
+
+  .post-item-tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .post-item-title {
+    font-size: 14px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+  }
+
+  .post-item-date {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .post-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .btn-edit, .btn-delete {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .btn-edit {
+    background: rgba(26,35,64,0.07);
+    color: var(--navy);
+  }
+
+  .btn-edit:hover { background: var(--navy); color: white; }
+
+  .btn-delete {
+    background: rgba(192,57,43,0.08);
+    color: var(--red);
+  }
+
+  .btn-delete:hover { background: var(--red); color: white; }
+
+  .empty-state {
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .btn-export {
+    background: var(--navy);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-export:hover { background: #243058; }
+    .admin-body { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    header { padding: 0 20px; }
+    .btn-site { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Av. Fatih <span>Kodalak</span></div>
+    <div class="login-sub">Admin Paneli</div>
+    <label class="login-label">Şifre</label>
+    <input type="password" class="login-input" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="login-btn" onclick="doLogin()">Giriş Yap</button>
+    <div class="login-error" id="login-error">Şifre hatalı.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <header>
+    <div class="header-logo">Av. Fatih <span>Kodalak</span> — Admin</div>
+    <div class="header-right">
+      <a href="index.html" class="btn-site" target="_blank">Siteye Git ↗</a>
+      <button class="btn-logout" onclick="doLogout()">Çıkış</button>
+    </div>
+  </header>
+
+  <div class="admin-body">
+
+    <!-- FORM -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <span class="form-card-title" id="form-title">Yeni Yazı Ekle</span>
+        <span class="form-card-subtitle" id="form-mode-label">Blog</span>
+      </div>
+      <div class="form-body">
+        <div class="form-row">
+          <div class="field">
+            <label>Tür</label>
+            <select id="f-type">
+              <option value="blog">Blog</option>
+              <option value="kendime">Kendime Yazılar</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Kategori / Etiket</label>
+            <input type="text" id="f-tag" placeholder="örn. Ceza Hukuku">
+          </div>
+        </div>
+        <div class="field">
+          <label>Başlık</label>
+          <input type="text" id="f-title" placeholder="Yazı başlığı">
+        </div>
+        <div class="field">
+          <label>Özet (Blog için)</label>
+          <input type="text" id="f-excerpt" placeholder="Kısa bir açıklama cümlesi">
+        </div>
+        <div class="field">
+          <label>İçerik</label>
+          <textarea id="f-content" placeholder="Yazının tam içeriği buraya..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Tarih</label>
+            <input type="text" id="f-date" placeholder="örn. Mayıs 2025">
+          </div>
+          <div class="field">
+            <label>Yıl (Kendime Yazılar için)</label>
+            <input type="text" id="f-year" placeholder="örn. 2025">
+          </div>
+        </div>
+        <div id="form-success" class="form-success">✓ Yazı başarıyla kaydedildi.</div>
+        <div class="form-actions">
+          <button class="btn-submit" onclick="savePost()">Kaydet</button>
+          <button class="btn-cancel" id="btn-cancel" onclick="cancelEdit()" style="display:none">İptal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="list-card">
+      <div class="list-header">
+        <span class="list-title">Yazılar</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="post-count" id="post-count">0</span>
+          <button class="btn-export" onclick="exportPosts()">↓ Dışa Aktar</button>
+        </div>
+      </div>
+      <div class="posts-list" id="posts-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PASS = '13861772';
+const STORAGE_KEY = 'fk_posts';
+let editingId = null;
+
+function exportPosts() {
+  const posts = getPosts();
+  const blob = new Blob([JSON.stringify(posts, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'posts.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function doLogin() {
+  const val = document.getElementById('pw-input').value;
+  if (val === PASS) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    renderList();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-panel').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+}
+
+function getPosts() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function savePosts(posts) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+}
+
+function savePost() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { alert('Başlık zorunlu.'); return; }
+
+  const post = {
+    id: editingId || Date.now(),
+    type: document.getElementById('f-type').value,
+    tag: document.getElementById('f-tag').value.trim(),
+    title,
+    excerpt: document.getElementById('f-excerpt').value.trim(),
+    content: document.getElementById('f-content').value.trim(),
+    date: document.getElementById('f-date').value.trim(),
+    year: document.getElementById('f-year').value.trim(),
+  };
+
+  const posts = getPosts();
+  if (editingId) {
+    const idx = posts.findIndex(p => p.id === editingId);
+    if (idx > -1) posts[idx] = post;
+  } else {
+    posts.unshift(post);
+  }
+
+  savePosts(posts);
+  showSuccess();
+  cancelEdit();
+  renderList();
+}
+
+function showSuccess() {
+  const el = document.getElementById('form-success');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2500);
+}
+
+function editPost(id) {
+  const post = getPosts().find(p => p.id === id);
+  if (!post) return;
+  editingId = id;
+  document.getElementById('f-type').value = post.type || 'blog';
+  document.getElementById('f-tag').value = post.tag || '';
+  document.getElementById('f-title').value = post.title || '';
+  document.getElementById('f-excerpt').value = post.excerpt || '';
+  document.getElementById('f-content').value = post.content || '';
+  document.getElementById('f-date').value = post.date || '';
+  document.getElementById('f-year').value = post.year || '';
+  document.getElementById('form-title').textContent = 'Yazıyı Düzenle';
+  document.getElementById('btn-cancel').style.display = 'inline-block';
+  window.scrollTo(0, 0);
+}
+
+function deletePost(id) {
+  if (!confirm('Bu yazıyı silmek istediğinize emin misiniz?')) return;
+  const posts = getPosts().filter(p => p.id !== id);
+  savePosts(posts);
+  renderList();
+}
+
+function cancelEdit() {
+  editingId = null;
+  ['f-type','f-tag','f-title','f-excerpt','f-content','f-date','f-year'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === 'SELECT') el.value = 'blog';
+    else el.value = '';
+  });
+  document.getElementById('form-title').textContent = 'Yeni Yazı Ekle';
+  document.getElementById('btn-cancel').style.display = 'none';
+}
+
+function renderList() {
+  const posts = getPosts();
+  document.getElementById('post-count').textContent = posts.length;
+  const container = document.getElementById('posts-list');
+
+  if (posts.length === 0) {
+    container.innerHTML = '<div class="empty-state">Henüz yazı yok.<br>Soldan ilk yazınızı ekleyin.</div>';
+    return;
+  }
+
+  container.innerHTML = posts.map(p => `
+    <div class="post-item">
+      <div class="post-item-info">
+        <div class="post-item-tag">${p.type === 'kendime' ? 'Kendime Yazılar' : 'Blog'} ${p.tag ? '· ' + p.tag : ''}</div>
+        <div class="post-item-title">${p.title}</div>
+        <div class="post-item-date">${p.date || p.year || ''}</div>
+      </div>
+      <div class="post-actions">
+        <button class="btn-edit" onclick="editPost(${p.id})">Düzenle</button>
+        <button class="btn-delete" onclick="deletePost(${p.id})">Sil</button>
+      </div>
+    </div>
+  `).join('');
+}
+</script>
+</body>
+</html>
